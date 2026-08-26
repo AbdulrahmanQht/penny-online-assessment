@@ -8,6 +8,7 @@
 
 - In `components/diff.util.ts`, I changed the computeDiff change detection logic from checking only the unit price to also checking the quantity.
 - In `components/cr-detail/cr-detail.component.ts`, I fixed the `canApprove` and `canReject` logic to check whether the current user has an approval policy by using the `canApprovePolicy` function from `common/permissions.ts`.
+- In `components/cr-list/cr-list.component.ts`, I implemented the status filtering for the change request list dropdown.
 
 ## 2. Component & state model
 <!-- The screens, the view-state each component exposes, and how data flows from the mock API into the
