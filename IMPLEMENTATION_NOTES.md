@@ -10,6 +10,7 @@
 - In `components/cr-detail/cr-detail.component.ts`, I sorted the timeline from oldest to newest.
 - In `components/cr-detail/cr-detail.component.ts`, I added the Approve and Reject API actions with submitting and error handling, and added required validation for the rejection reason.
 - In `components/cr-detail/cr-detail.component.ts`, I added `ngOnChanges` so the detail view reloads when a different CR is selected from the list.
+- In `components/cr-detail/cr-detail.component.html`, I made the Approve action permission-aware so read-only users cannot see it, and ensured the Approve/Reject actions are hidden once a CR is no longer pending approval after approval or rejection. I also verified the loading, empty, and error states for the list and detail views, including slow and failing API responses.
 
 ## 2. Component & state model
 <!-- The screens, the view-state each component exposes, and how data flows from the mock API into the
