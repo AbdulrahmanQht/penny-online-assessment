@@ -26,7 +26,6 @@ export class CrDetailComponent implements OnChanges {
 	state: ViewState<CrDetail> = idle();
 	submitting = false;
 	actionError?: string;
-	// TODO: add validation so the form is invalid until a reason is entered.
 	rejectControl = new FormControl('', {
 		nonNullable: true,
 		validators: [Validators.required] // Make the reason field required and not accepting empty strings.
@@ -66,13 +65,17 @@ export class CrDetailComponent implements OnChanges {
 		return [...auditEntries].sort((a, b) => a.at.localeCompare(b.at));
 	}
 
+	get isPendingApproval(): boolean {
+		return this.detail?.status === 'PENDING_APPROVAL';
+	}
+
 	/** Whether the current user may approve the loaded CR. */
 	get canApprove(): boolean {
-		return this.detail?.status === 'PENDING_APPROVAL' && canApprovePolicy(this.session.user);
+		return this.isPendingApproval && canApprovePolicy(this.session.user);
 	}
 
 	get canReject(): boolean {
-		return this.detail?.status === 'PENDING_APPROVAL' && canApprovePolicy(this.session.user);
+		return this.isPendingApproval && canApprovePolicy(this.session.user);
 	}
 
 	fmt(amount: number): string {
@@ -80,7 +83,6 @@ export class CrDetailComponent implements OnChanges {
 	}
 
 	async approve(): Promise<void> {
-		
 		this.submitting = true;
 		this.actionError = undefined;
 		// Implemented approve workflow by calling the approve API method
