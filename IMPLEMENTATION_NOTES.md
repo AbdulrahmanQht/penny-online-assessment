@@ -1,7 +1,5 @@
 # Implementation Notes
 
-> Fill this in as part of your submission. 1–2 pages, bullet points are fine. Delete these
-> instructions before submitting.
 
 ## 1. What I changed
 <!-- Grouped by task: bugs fixed and features implemented (component + template). -->
@@ -9,6 +7,9 @@
 - In `components/diff.util.ts`, I changed the computeDiff change detection logic from checking only the unit price to also checking the quantity.
 - In `components/cr-detail/cr-detail.component.ts`, I fixed the `canApprove` and `canReject` logic to check whether the current user has an approval policy by using the `canApprovePolicy` function from `common/permissions.ts`.
 - In `components/cr-list/cr-list.component.ts`, I implemented the status filtering for the change request list dropdown.
+- In `components/cr-detail/cr-detail.component.ts`, I sorted the timeline from oldest to newest.
+- In `components/cr-detail/cr-detail.component.ts`, I added the Approve and Reject API actions with submitting and error handling, and added required validation for the rejection reason.
+- In `components/cr-detail/cr-detail.component.ts`, I added `ngOnChanges` so the detail view reloads when a different CR is selected from the list.
 
 ## 2. Component & state model
 <!-- The screens, the view-state each component exposes, and how data flows from the mock API into the
