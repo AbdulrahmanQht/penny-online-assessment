@@ -68,7 +68,6 @@ export class CrDetailComponent implements OnChanges {
 
 	/** Whether the current user may approve the loaded CR. */
 	get canApprove(): boolean {
-		// NOTE: this only looks at the CR status. The UI must also respect the user's permissions.
 		return this.detail?.status === 'PENDING_APPROVAL' && canApprovePolicy(this.session.user);
 	}
 
@@ -81,6 +80,7 @@ export class CrDetailComponent implements OnChanges {
 	}
 
 	async approve(): Promise<void> {
+		
 		this.submitting = true;
 		this.actionError = undefined;
 		// Implemented approve workflow by calling the approve API method
