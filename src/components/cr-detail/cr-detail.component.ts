@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CrApiService } from '../../api/cr-api.service';
 import { SessionService } from '../../session/session.service';
 import { CrDetail, TimelineEntry } from '../../models/cr.models';
@@ -20,19 +20,24 @@ import { canApprovePolicy } from '../../common/permissions';
 	imports: [CommonModule, ReactiveFormsModule],
 	templateUrl: './cr-detail.component.html',
 })
-export class CrDetailComponent implements OnInit {
+export class CrDetailComponent implements OnChanges {
 	@Input() id!: string;
 
 	state: ViewState<CrDetail> = idle();
 	submitting = false;
 	actionError?: string;
 	// TODO: add validation so the form is invalid until a reason is entered.
-	rejectControl = new FormControl('', { nonNullable: true });
+	rejectControl = new FormControl('', {
+		nonNullable: true,
+		validators: [Validators.required] // Make the reason field required and not accepting empty strings.
+	});
 
 	constructor(private readonly api: CrApiService, private readonly session: SessionService) {}
 
-	ngOnInit(): void {
-		void this.load();
+	ngOnChanges(): void {
+		if (this.id) {
+			void this.load();
+		}
 	}
 
 	async load(): Promise<void> {
@@ -56,8 +61,9 @@ export class CrDetailComponent implements OnInit {
 
 	/** Approval timeline, oldest-first. */
 	get timeline(): TimelineEntry[] {
-		// TODO: return the audit entries ordered chronologically (oldest first).
-		return this.detail?.audit ?? [];
+		const auditEntries = this.detail?.audit ?? [];
+		// Sort audit entries chronologically (oldest first)
+		return [...auditEntries].sort((a, b) => a.at.localeCompare(b.at));
 	}
 
 	/** Whether the current user may approve the loaded CR. */
@@ -75,13 +81,41 @@ export class CrDetailComponent implements OnInit {
 	}
 
 	async approve(): Promise<void> {
-		// TODO: perform the approve action through the API and reflect the outcome in the view.
-		throw new Error('approve() not implemented');
+		this.submitting = true;
+		this.actionError = undefined;
+		// Implemented approve workflow by calling the approve API method
+		// and updating the view based on the result.
+		try {
+			const at = new Date().toISOString();
+			const detail = await this.api.approve(this.session.user, this.id, at);
+			this.state = { status: 'loaded', data: detail };
+		} catch (err) {
+			this.actionError = (err as Error).message;
+		} finally {
+        this.submitting = false;
+		}
 	}
 
 	async reject(): Promise<void> {
-		// TODO: require a valid rejectControl, then perform the reject action through the API and
-		//       reflect the outcome in the view.
-		throw new Error('reject() not implemented');
+		if (this.rejectControl.invalid) {
+			// Makes the rejectControl.touched true to show the error message.
+			this.rejectControl.markAsTouched();
+			return;
+		}
+		this.submitting = true;
+		this.actionError = undefined;
+		// Implemented reject workflow with reason validation, API call,
+		// and view updates based on the result.
+		try {
+			const at = new Date().toISOString();
+			const reason = this.rejectControl.value;
+
+			const detail = await this.api.reject(this.session.user, this.id, at, reason);
+			this.state = { status: 'loaded', data: detail };
+		} catch (err) {
+			this.actionError = (err as Error).message;
+		} finally {
+        this.submitting = false;
+		}
 	}
 }
