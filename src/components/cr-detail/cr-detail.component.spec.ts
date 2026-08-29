@@ -22,7 +22,6 @@ async function render(user: ReqUser, id: string): Promise<ComponentFixture<CrDet
 	return fixture;
 }
 
-
 describe('CrDetailComponent', () => {
 	it('loads and renders the change request title', async () => {
 		const fixture = await render(users.approver, 'CR-1');
@@ -110,7 +109,8 @@ describe('CrDetailComponent', () => {
 	it('orders audit entries chronologically, oldest first', async () => {
 		const fixture = await render(users.approver, 'CR-1');
 		const actions: string[] = Array.from(fixture.nativeElement.querySelectorAll('.cr-timeline__action')).map((el: Element) =>
-			el.textContent!.trim()
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			el.textContent!.trim(),
 		);
 		expect(actions).toEqual(['CREATE', 'SUBMIT', 'SEND_FOR_APPROVAL']);
 	});
@@ -212,9 +212,9 @@ describe('CrDetailComponent', () => {
 		await flush();
 		fixture.detectChanges();
 
-		jest.spyOn(api, 'approve').mockImplementation(() =>
-			new Promise((_, reject) => setTimeout(() => reject(new Error('Approve failed')), 0))
-		);
+		jest
+			.spyOn(api, 'approve')
+			.mockImplementation(() => new Promise((_, reject) => setTimeout(() => reject(new Error('Approve failed')), 0)));
 
 		fixture.nativeElement.querySelector('.cr-actions__approve').click();
 		await flush();
@@ -341,9 +341,7 @@ describe('CrDetailComponent', () => {
 		await flush();
 		fixture.detectChanges();
 
-		jest.spyOn(api, 'reject').mockImplementation(() =>
-			new Promise((_, reject) => setTimeout(() => reject(new Error('Reject failed')), 0))
-		);
+		jest.spyOn(api, 'reject').mockImplementation(() => new Promise((_, reject) => setTimeout(() => reject(new Error('Reject failed')), 0)));
 
 		fixture.componentInstance.rejectControl.setValue('Not needed this quarter');
 		fixture.detectChanges();

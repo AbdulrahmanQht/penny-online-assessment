@@ -28,7 +28,7 @@ export class CrDetailComponent implements OnChanges {
 	actionError?: string;
 	rejectControl = new FormControl('', {
 		nonNullable: true,
-		validators: [Validators.required] // Make the reason field required and not accepting empty strings.
+		validators: [Validators.required], // Make the reason field required and not accepting empty strings.
 	});
 
 	constructor(private readonly api: CrApiService, private readonly session: SessionService) {}
@@ -94,7 +94,7 @@ export class CrDetailComponent implements OnChanges {
 		} catch (err) {
 			this.actionError = (err as Error).message;
 		} finally {
-        this.submitting = false;
+			this.submitting = false;
 		}
 	}
 
@@ -117,7 +117,7 @@ export class CrDetailComponent implements OnChanges {
 		} catch (err) {
 			this.actionError = (err as Error).message;
 		} finally {
-        this.submitting = false;
+			this.submitting = false;
 		}
 	}
 }

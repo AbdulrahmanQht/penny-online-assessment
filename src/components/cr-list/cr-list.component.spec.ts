@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CrListComponent } from './cr-list.component';
 import { SessionService } from '../../session/session.service';
-import { CrApiService } from '../../api/cr-api.service'
+import { CrApiService } from '../../api/cr-api.service';
 import { users } from '../../api/fixtures';
 import { ReqUser } from '../../models/cr.models';
 
@@ -35,10 +35,7 @@ describe('CrListComponent', () => {
 	it('shows the loading state while loading change requests', async () => {
 		TestBed.configureTestingModule({
 			imports: [CrListComponent],
-			providers: [
-				{ provide: SessionService, useValue: { user: users.approver } },
-				CrApiService,
-			],
+			providers: [{ provide: SessionService, useValue: { user: users.approver } }, CrApiService],
 		});
 
 		await TestBed.compileComponents();
@@ -51,9 +48,7 @@ describe('CrListComponent', () => {
 
 		fixture.detectChanges();
 
-		expect(
-			fixture.nativeElement.querySelector('.cr-list__loading')
-		).not.toBeNull();
+		expect(fixture.nativeElement.querySelector('.cr-list__loading')).not.toBeNull();
 	});
 
 	it('shows the error state when loading change requests fails', async () => {
@@ -62,9 +57,9 @@ describe('CrListComponent', () => {
 			providers: [
 				{
 					provide: SessionService,
-					useValue: { user: users.approver }
+					useValue: { user: users.approver },
 				},
-				CrApiService
+				CrApiService,
 			],
 		});
 
@@ -82,9 +77,7 @@ describe('CrListComponent', () => {
 
 		fixture.detectChanges();
 
-		expect(
-			fixture.nativeElement.querySelector('.cr-list__error')
-		).not.toBeNull();
+		expect(fixture.nativeElement.querySelector('.cr-list__error')).not.toBeNull();
 	});
 
 	it('retries loading after an error', async () => {
@@ -93,9 +86,9 @@ describe('CrListComponent', () => {
 			providers: [
 				{
 					provide: SessionService,
-					useValue: { user: users.approver }
+					useValue: { user: users.approver },
 				},
-				CrApiService
+				CrApiService,
 			],
 		});
 
@@ -112,13 +105,10 @@ describe('CrListComponent', () => {
 		await flush();
 		fixture.detectChanges();
 
-		expect(
-			fixture.nativeElement.querySelector('.cr-list__error')
-		).not.toBeNull();
+		expect(fixture.nativeElement.querySelector('.cr-list__error')).not.toBeNull();
 
 		// Click Retry
-		const retryButton: HTMLButtonElement =
-			fixture.nativeElement.querySelector('.cr-list__error button');
+		const retryButton: HTMLButtonElement = fixture.nativeElement.querySelector('.cr-list__error button');
 
 		retryButton.click();
 
@@ -126,13 +116,9 @@ describe('CrListComponent', () => {
 		fixture.detectChanges();
 
 		// Retry succeeds
-		expect(
-			fixture.nativeElement.querySelector('.cr-list__table')
-		).not.toBeNull();
+		expect(fixture.nativeElement.querySelector('.cr-list__table')).not.toBeNull();
 
-		expect(
-			fixture.nativeElement.querySelectorAll('.cr-list__row').length
-		).toBe(3);
+		expect(fixture.nativeElement.querySelectorAll('.cr-list__row').length).toBe(3);
 	});
 
 	it('shows all rows when filter status is ALL', async () => {
@@ -172,7 +158,7 @@ describe('CrListComponent', () => {
 		const fixture = await render(users.approver);
 
 		const emittedIds: string[] = [];
-		fixture.componentInstance.select.subscribe(id => {
+		fixture.componentInstance.select.subscribe((id) => {
 			emittedIds.push(id);
 		});
 
